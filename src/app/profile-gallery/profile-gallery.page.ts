@@ -111,11 +111,11 @@ async presentActionSheet(userGalleryID, orderNum) {
       header: 'Upload from',
       buttons: [
           {
-              text: 'Photo Gallery1',
+              text: 'Photo Gallery2',
               icon: 'images',
               handler: () => {
                 this.selectImage()
-                  // this.openGallery(userGalleryID, orderNum);
+                  this.openGallery(userGalleryID, orderNum);
               }
           },
           {
@@ -141,7 +141,7 @@ openCamera(userGalleryID, orderNum) {
     saveToGallery: true,
     correctOrientation: true
   }
-  Camera.getPhoto(options).then((imageData) => {
+  Camera.getPhoto(options).then(async (imageData) => {
     //FIlesystem to save photo
     var imageURI = imageData.webPath;
     var filePath = imageURI;
@@ -158,29 +158,37 @@ openCamera(userGalleryID, orderNum) {
             'user_gallery_id': userGalleryID
         }
     };
-    const fileTransfer: FileTransferObject = this.transfer.create();
-    fileTransfer.upload(filePath, SERVER_URL.baseURL + '/services/uplProfileGalPic', options)
-    .then((data) => {
-        this.imgObj = JSON.parse(data.response);
-        if (this.imgObj.code == 200) {
-            this.imgArr[orderNum - 1] = {
-                "user_gallery_id": this.imgObj.user_gallery_id,
-                "img_name": this.imgObj.image,
-                "img_ord": this.imgObj.img_ord,
-                "img_url": this.imgObj.img_url
-            }
-            localStorage.setItem("il_profile_complete_flag", "3");
-            this.hideContinueBtn = false;
-        } else {
-            this.toastCtrl.create({
-              message: this.resultObj.message, position: 'top', duration: 2700
-            }).then((toastData) => { toastData.present(); });
-        }
-    }, (err) => {
-        this.toastCtrl.create({
-          message: this.resultObj.message, position: 'top', duration: 2700
-        }).then((toastData) => { toastData.present(); });
-    });
+    const base64Data = await this.readAsBase64(imageData);
+    const no = orderNum - 1;
+    this.imgArr[no] = {
+                  "user_gallery_id": no,
+                  "img_name": no,
+                  "img_ord": no,
+                  "img_url": base64Data
+              }
+    // const fileTransfer: FileTransferObject = this.transfer.create();
+    // fileTransfer.upload(filePath, SERVER_URL.baseURL + '/services/uplProfileGalPic', options)
+    // .then((data) => {
+    //     this.imgObj = JSON.parse(data.response);
+    //     if (this.imgObj.code == 200) {
+    //         this.imgArr[orderNum - 1] = {
+    //             "user_gallery_id": this.imgObj.user_gallery_id,
+    //             "img_name": this.imgObj.image,
+    //             "img_ord": this.imgObj.img_ord,
+    //             "img_url": this.imgObj.img_url
+    //         }
+    //         localStorage.setItem("il_profile_complete_flag", "3");
+    //         this.hideContinueBtn = false;
+    //     } else {
+    //         this.toastCtrl.create({
+    //           message: this.resultObj.message, position: 'top', duration: 2700
+    //         }).then((toastData) => { toastData.present(); });
+    //     }
+    // }, (err) => {
+    //     this.toastCtrl.create({
+    //       message: this.resultObj.message, position: 'top', duration: 2700
+    //     }).then((toastData) => { toastData.present(); });
+    // });
   }).catch((err) => {
     this.toastCtrl.create({
       message: 'Photo could not be uploaded', position: 'top', duration: 2700
@@ -323,8 +331,7 @@ async presentProfileActionSheet() {
             text: 'Photo Gallery1',
             icon: 'images',
             handler: () => {
-              console.log('photo Galary')
-                this.selectImage();
+              this.openProfileCamera();
             }
         },
         {
@@ -339,9 +346,9 @@ async presentProfileActionSheet() {
   actionSheet.present();
 }
 
-openProfileGallery() {
-  const options: ImagePickerOptions = { maximumImagesCount: 1 }
-  console.log('hi')
+// openProfileGallery() {
+//   const options: ImagePickerOptions = { maximumImagesCount: 1 }
+//   console.log('hi')
 //   this.imagePicker.getPictures(options).then((results) => {
 //     if (results.length) {
 //       let loading = this.loadingCtrl.create({
@@ -390,54 +397,54 @@ openProfileGallery() {
 //       message: "Sorry Images could not be loaded", position: 'top', duration: 3000
 //     }).then((toastData) => { toastData.present(); });
 //   });
-}
-
-// openProfileGallery() {
-//   var options:ImageOptions = {
-//     source: CameraSource.Photos,
-//     resultType: CameraResultType.DataUrl
-//   }
-//   Camera.getPhoto(options).then((imageData) => {
-//     this.base64 = imageData.dataUrl;
-//     var imageURI = imageData.dataUrl;
-//     var filePath = imageURI;
-//     var filename = imageURI.substr(imageURI.lastIndexOf('/') + 1);
-//     var options = {
-//         fileKey: "file",
-//         fileName: filename,
-//         chunkedMode: false,
-//         params: {
-//             'fileName': filename,
-//             'client_key': SERVER_URL.client_key,
-//             'user_id': localStorage.getItem("il_user_id")
-//         }
-//     };
-//     const fileTransfer: FileTransferObject = this.transfer.create();
-//     fileTransfer.upload(filePath, SERVER_URL.baseURL + '/services/updateProfilePic', options)
-//     .then((data) => {
-//         this.imgObj = JSON.parse(data.response);
-//         if (this.imgObj.code == 200) {
-//           this.profilePic = this.imgObj.path;
-//           localStorage.setItem("il_profile_pic", this.profilePic);
-//           this.hideContinueBtn = false;
-//           localStorage.setItem("il_profile_complete_flag", "3");
-//         } else {
-//           this.toastCtrl.create({
-//             message: this.resultObj.message, position: 'top', duration: 2700
-//           }).then((toastData) => { toastData.present(); });
-//         }
-//     }, (err) => {
-//         this.toastCtrl.create({
-//           message: this.resultObj.message, position: 'top', duration: 2700
-//         }).then((toastData) => { toastData.present(); });
-//     });
-
-//   }).catch((err) => {
-//     this.toastCtrl.create({
-//       message: "Sorry Images could not be loaded", position: 'top', duration: 2700
-//     }).then((toastData) => { toastData.present(); });
-//   });
 // }
+
+openProfileGallery() {
+  var options:ImageOptions = {
+    source: CameraSource.Photos,
+    resultType: CameraResultType.DataUrl
+  }
+  Camera.getPhoto(options).then((imageData) => {
+    this.base64 = imageData.dataUrl;
+    var imageURI = imageData.dataUrl;
+    var filePath = imageURI;
+    var filename = imageURI.substr(imageURI.lastIndexOf('/') + 1);
+    var options = {
+        fileKey: "file",
+        fileName: filename,
+        chunkedMode: false,
+        params: {
+            'fileName': filename,
+            'client_key': SERVER_URL.client_key,
+            'user_id': localStorage.getItem("il_user_id")
+        }
+    };
+    // const fileTransfer: FileTransferObject = this.transfer.create();
+    // fileTransfer.upload(filePath, SERVER_URL.baseURL + '/services/updateProfilePic', options)
+    // .then((data) => {
+    //     this.imgObj = JSON.parse(data.response);
+    //     if (this.imgObj.code == 200) {
+    //       this.profilePic = this.imgObj.path;
+    //       localStorage.setItem("il_profile_pic", this.profilePic);
+    //       this.hideContinueBtn = false;
+    //       localStorage.setItem("il_profile_complete_flag", "3");
+    //     } else {
+    //       this.toastCtrl.create({
+    //         message: this.resultObj.message, position: 'top', duration: 2700
+    //       }).then((toastData) => { toastData.present(); });
+    //     }
+    // }, (err) => {
+    //     this.toastCtrl.create({
+    //       message: this.resultObj.message, position: 'top', duration: 2700
+    //     }).then((toastData) => { toastData.present(); });
+    // });
+
+  }).catch((err) => {
+    this.toastCtrl.create({
+      message: "Sorry Images could not be loaded", position: 'top', duration: 2700
+    }).then((toastData) => { toastData.present(); });
+  });
+}
 
   async openProfileCamera() {
     var options:ImageOptions = {
@@ -448,7 +455,7 @@ openProfileGallery() {
       saveToGallery: true,
       correctOrientation: true
     }
-    Camera.getPhoto(options).then((imageData) => {
+    Camera.getPhoto(options).then(async (imageData) => {
       //FIlesystem to save photo
       const fileTransfer: FileTransferObject = this.transfer.create();
       var filePath = imageData.webPath;
@@ -463,10 +470,11 @@ openProfileGallery() {
               'user_id': localStorage.getItem("il_user_id")
           }
       };
-
-      console.log(options)
+      const base64Data = await this.readAsBase64(imageData);
+      this.profilePic = base64Data; 
+      // console.log('sdnas', )
       
-      fileTransfer.upload(filePath, SERVER_URL.baseURL + '/services/updateProfilePic', options)
+      // fileTransfer.upload(filePath, SERVER_URL.baseURL + '/services/updateProfilePic', options)
       // .then((data) => {
       //   console.log(data);
       //     this.imgObj = JSON.parse(data.response);
