@@ -1,0 +1,63 @@
+{
+  "identifier" : "D92CC12F",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "179",
+      "familyShareable" : false,
+      "internalID" : "226A94CA",
+      "localizations" : [
+        {
+          "description" : "Get 1 Lets Validity 1 Day",
+          "displayName" : "Plan 250",
+          "locale" : "en_GB"
+        }
+      ],
+      "productID" : "Plan99",
+      "referenceName" : "Plan 250",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "799",
+      "familyShareable" : false,
+      "internalID" : "C508064E",
+      "localizations" : [
+        {
+          "description" : "Get 10 Lets Validity 30 Days",
+          "displayName" : "Plan 3500",
+          "locale" : "en_GB"
+        }
+      ],
+      "productID" : "Plan799",
+      "referenceName" : "Plan 3500",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "1399",
+      "familyShareable" : false,
+      "internalID" : "C0D96064",
+      "localizations" : [
+        {
+          "description" : "Get 30 Lets Validity 30 Days",
+          "displayName" : "Plan 5000",
+          "locale" : "en_GB"
+        }
+      ],
+      "productID" : "Plan1399",
+      "referenceName" : "Plan 5000",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 1,
+    "minor" : 1
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "ItsLets",
+  "integrations": {
+    "capacitor": {},
+    "cordova": {}
+  },
+  "type": "angular"
+}
