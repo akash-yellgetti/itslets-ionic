@@ -114,15 +114,14 @@ async presentActionSheet(userGalleryID, orderNum) {
               text: 'Photo Gallery2',
               icon: 'images',
               handler: () => {
-                this.selectImage()
-                  this.openGallery(userGalleryID, orderNum);
+                this.openCamera(userGalleryID, orderNum);
               }
           },
           {
               text: 'Camera',
               icon: 'camera',
               handler: () => {
-                  this.openCamera(userGalleryID, orderNum);
+                this.openCamera(userGalleryID, orderNum);
               }
           }
       ]
