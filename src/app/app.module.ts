@@ -15,7 +15,7 @@ import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { InAppPurchase2 } from '@ionic-native/in-app-purchase-2/ngx';
 import { ImagePicker } from '@awesome-cordova-plugins/image-picker/ngx';
-const config: SocketIoConfig = { url: 'http://socket.dicezen.com', options: {} };
+const config: SocketIoConfig = { url: 'http://socket.itslets.uat', options: {} };
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
