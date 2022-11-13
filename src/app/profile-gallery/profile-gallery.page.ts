@@ -142,7 +142,9 @@ openCamera(userGalleryID, orderNum) {
   }
   Camera.getPhoto(options).then(async (imageData) => {
     //FIlesystem to save photo
+    console.log(imageData)
     var imageURI = imageData.webPath;
+
     var filePath = imageURI;
     var filename = imageURI.toString().substr(imageURI.toString().lastIndexOf('/') + 1);
     var options = {
@@ -165,6 +167,12 @@ openCamera(userGalleryID, orderNum) {
                   "img_ord": no,
                   "img_url": base64Data
               }
+
+    // const formData = new FormData();
+    // formData.append('journeyId', _.get(details, '_doc'));
+    // formData.append('file', this.file);
+
+      // this.http.post(SERVER_URL.baseURL + '/services/uplProfileGalPic', formData, )
     // const fileTransfer: FileTransferObject = this.transfer.create();
     // fileTransfer.upload(filePath, SERVER_URL.baseURL + '/services/uplProfileGalPic', options)
     // .then((data) => {
@@ -445,58 +453,68 @@ openProfileGallery() {
   });
 }
 
-  async openProfileCamera() {
-    var options:ImageOptions = {
-      resultType: CameraResultType.Uri, // file-based data; provides best performance
-      source: CameraSource.Camera, // automatically take a new photo with the camera
-      quality: 90, // highest quality (0 to 100)
-      allowEditing: true, // Resizes image
-      saveToGallery: true,
-      correctOrientation: true
-    }
-    Camera.getPhoto(options).then(async (imageData) => {
-      //FIlesystem to save photo
-      const fileTransfer: FileTransferObject = this.transfer.create();
-      var filePath = imageData.webPath;
-      var filename = filePath.toString().substr(filePath.toString().lastIndexOf('/') + 1);
-      var options = {
-          fileKey: "file",
-          fileName: filename,
-          chunkedMode: false,
-          params: {
-              'fileName': filename,
-              'client_key': SERVER_URL.client_key,
-              'user_id': localStorage.getItem("il_user_id")
-          }
-      };
-      const base64Data = await this.readAsBase64(imageData);
-      this.profilePic = base64Data; 
-      // console.log('sdnas', )
+async openProfileCamera() {
+  var options:ImageOptions = {
+    resultType: CameraResultType.Base64, // file-based data; provides best performance
+    source: CameraSource.Camera, // automatically take a new photo with the camera
+    quality: 90, // highest quality (0 to 100)
+    allowEditing: true, // Resizes image
+    saveToGallery: true,
+    correctOrientation: true
+  }
+  const image = await Camera.getPhoto(options);
+  console.log('image', image)
+  
+      const fileName = 'sample-image';
+      const params = {
+          'fileName': fileName,
+          'client_key': SERVER_URL.client_key,
+          'user_id': localStorage.getItem("il_user_id"),
+          'user_gallery_id': localStorage.getItem("il_user_id"),
+          'img_ord': '1234'
+      }
       
-      // fileTransfer.upload(filePath, SERVER_URL.baseURL + '/services/updateProfilePic', options)
-      // .then((data) => {
-      //   console.log(data);
-      //     this.imgObj = JSON.parse(data.response);
-      //     if (this.imgObj.code == 200) {
-      //       this.profilePic = this.imgObj.path;
-      //       localStorage.setItem("il_profile_pic", this.profilePic);
-      //       this.hideContinueBtn = false;
-      //       localStorage.setItem("il_profile_complete_flag", "3");
-      //     } else {
-      //         this.toastCtrl.create({
-      //           message: this.resultObj.message, position: 'top', duration: 2700
-      //         }).then((toastData) => { toastData.present(); });
-      //     }
-      // }, (err) => {
-      //     this.toastCtrl.create({
-      //       message: this.resultObj.message, position: 'top', duration: 2700
-      //     }).then((toastData) => { toastData.present(); });
-      // });
-    }).catch((err) => {
-      this.toastCtrl.create({
-        message: 'Photo could not be taken', position: 'top', duration: 2700
-      }).then((toastData) => { toastData.present(); });
-    });
+      const formData = new FormData();
+      for (const i in params) {
+        if (Object.prototype.hasOwnProperty.call(params, i)) {
+          // console.log(i, params[i])
+          formData.append(i, params[i]);
+        }
+      }
+      
+      
+      const name = fileName+'.'+image.format;
+      // console.log(name);
+      const blob = this.b64toBlob(image.base64String, `image/${image.format}`);
+      // console.log(blob);
+      formData.append('file', blob, name);
+      this.http.post(
+        SERVER_URL.baseURL + '/services/uplProfileGalPic',
+        formData).subscribe((data) => { 
+
+          console.log('data', data)
+        }, error => {
+          console.log('error', error)
+        })
+}  
+  b64toBlob = (b64Data, contentType='', sliceSize=512) => {
+    const byteCharacters = atob(b64Data);
+    const byteArrays = [];
+  
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+  
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+  
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+  
+    const blob = new Blob(byteArrays, {type: contentType});
+    return blob;
   }
 
   goToHomePage() {
