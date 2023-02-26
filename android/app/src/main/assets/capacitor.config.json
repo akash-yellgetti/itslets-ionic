@@ -1,7 +1,0 @@
-{
-	"appId": "com.itslets.app",
-	"appName": "ItsLets",
-	"bundledWebRuntime": false,
-	"npmClient": "npm",
-	"webDir": "www"
-}

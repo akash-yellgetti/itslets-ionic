@@ -1,0 +1,1 @@
+npm install -g @ionic/cli native-run cordova-res @angular/cli@12.0.1

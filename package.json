@@ -6,10 +6,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ionic build && ionic cap add android",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "postinstall": "ngcc"
   },
   "private": true,
   "dependencies": {
@@ -67,7 +68,7 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^12.0.1",
+    "@angular-devkit/build-angular": "^12.2.18",
     "@angular/cli": "^12.0.1",
     "@angular/compiler": "^12.0.1",
     "@angular/compiler-cli": "^12.0.1",
@@ -88,7 +89,7 @@
     "protractor": "~7.0.0",
     "ts-node": "^8.8.2",
     "tslint": "~6.1.0",
-    "typescript": "^4.2.4"
+    "typescript": "^4.3.5"
   },
   "description": "Lets is a lifestyle mobile app which connects people via their hobbies or favorite activities.",
   "cordova": {
